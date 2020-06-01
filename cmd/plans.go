@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"strconv"
-
 	"github.com/lade-io/go-lade"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
@@ -28,8 +26,8 @@ func plansRun(client *lade.Client) error {
 	}
 	t := table.New("ID", "MEMORY", "CPUS", "DISK", "PRICE HOURLY", "PRICE MONTHLY")
 	for _, plan := range plans {
-		priceHourly := strconv.FormatFloat(plan.PriceHourly, 'f', -1, 64)
-		priceMonthly := strconv.FormatFloat(plan.PriceMonthly, 'f', 2, 64)
+		priceHourly := printPrice(plan.PriceHourly, -1)
+		priceMonthly := printPrice(plan.PriceMonthly, 2)
 		t.AddRow(plan.ID, plan.Ram, plan.Cpu, plan.Disk, priceHourly, priceMonthly)
 	}
 	t.Print()

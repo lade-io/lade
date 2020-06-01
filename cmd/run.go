@@ -18,7 +18,7 @@ var runCmd = func() *cobra.Command {
 	var appName string
 	opts := &lade.ProcessCreateOpts{}
 	cmd := &cobra.Command{
-		Use:   "run",
+		Use:   "run <command>",
 		Short: "Run command on app",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -63,10 +63,10 @@ func runRun(client *lade.Client, opts *lade.ProcessCreateOpts, appName string) e
 func attachStream(resizeTTY func()) lade.ConnHandler {
 	return func(conn net.Conn) error {
 		resizeTTY()
-		sigchan := make(chan os.Signal, 1)
-		signal.Notify(sigchan, syscall.SIGWINCH)
+		sigChan := make(chan os.Signal, 1)
+		signal.Notify(sigChan, syscall.SIGWINCH)
 		go func() {
-			for range sigchan {
+			for range sigChan {
 				resizeTTY()
 			}
 		}()
@@ -77,29 +77,29 @@ func attachStream(resizeTTY func()) lade.ConnHandler {
 		}
 		defer term.RestoreTerminal(os.Stdin.Fd(), state)
 
-		errchan := make(chan error)
-		donechan := make(chan struct{})
+		errChan := make(chan error)
+		doneChan := make(chan struct{})
 		go func() {
 			_, err := io.Copy(os.Stdout, conn)
 			if err != nil {
-				errchan <- err
+				errChan <- err
 			}
-			donechan <- struct{}{}
+			close(doneChan)
 		}()
 		go func() {
 			_, err := io.Copy(conn, os.Stdin)
 			if err != nil {
-				errchan <- err
+				errChan <- err
 			}
 			conn.Close()
 		}()
 
 		select {
-		case err = <-errchan:
+		case err = <-errChan:
 			if !errors.Is(err, io.EOF) {
 				return err
 			}
-		case <-donechan:
+		case <-doneChan:
 		}
 		return nil
 	}

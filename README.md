@@ -2,6 +2,9 @@
 
 ![Lade logo](https://static.lade.io/lade-logo-small.png)
 
+[![Build Status](https://travis-ci.com/lade-io/lade.svg?branch=master)](https://travis-ci.com/lade-io/lade)
+[![Release](https://img.shields.io/github/v/release/lade-io/lade.svg)](https://github.com/lade-io/lade/releases/latest)
+
 Lade is a developer tool for running and managing your apps.
 
 You can learn more about Lade at https://lade.io.

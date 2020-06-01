@@ -178,7 +178,7 @@ func getKeyOptions(appName string) optionsFunc {
 }
 
 func getPlanOptions(client *lade.Client) (*orderedmap.OrderedMap, error) {
-	plans, err := client.Plan.List()
+	plans, err := client.Plan.User()
 	if err != nil {
 		return nil, err
 	}
@@ -318,11 +318,18 @@ func printNameLog(width int) lade.LogHandler {
 		name, ok := names[entry.Name]
 		if !ok {
 			color := colors[len(names)%len(colors)]
-			name = ansi.Color(fmt.Sprintf("%-*s | ", width+3, entry.Name), color)
+			name = ansi.Color(fmt.Sprintf("%-*s | ", width+2, entry.Name), color)
 			names[entry.Name] = name
 		}
 		fmt.Fprintln(out, name+entry.Line)
 	}
+}
+
+func printPrice(val float64, prec int) string {
+	if val == 0 {
+		return "Free"
+	}
+	return strconv.FormatFloat(val, 'f', prec, 64)
 }
 
 func processInfo(processes []*lade.Process) string {

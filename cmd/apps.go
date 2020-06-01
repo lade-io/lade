@@ -168,7 +168,7 @@ func getAppName() string {
 }
 
 func getRegion(client *lade.Client) string {
-	user, err := client.User.Get()
+	user, err := client.User.Me()
 	if err == nil {
 		return user.Region
 	}

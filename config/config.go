@@ -55,6 +55,9 @@ func Load(conf *Config) (err error) {
 }
 
 func configPaths() (string, string, error) {
+	if configFile, ok := os.LookupEnv("LADE_CONFIG"); ok {
+		return filepath.Dir(configFile), configFile, nil
+	}
 	home, err := homedir.Dir()
 	if err != nil {
 		return "", "", err
