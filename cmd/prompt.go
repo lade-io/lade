@@ -9,18 +9,20 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
+	"sync"
 
+	"github.com/AlecAivazis/survey/v2"
+	"github.com/AlecAivazis/survey/v2/core"
+	"github.com/AlecAivazis/survey/v2/terminal"
 	"github.com/iancoleman/orderedmap"
 	"github.com/lade-io/go-lade"
 	"github.com/mattn/go-colorable"
 	"github.com/mattn/go-isatty"
 	"github.com/mgutz/ansi"
 	"github.com/olekukonko/ts"
-	"gopkg.in/AlecAivazis/survey.v1"
-	"gopkg.in/AlecAivazis/survey.v1/core"
-	"gopkg.in/AlecAivazis/survey.v1/terminal"
 )
 
 var (
@@ -42,39 +44,52 @@ func askConfirm(msg string, choice bool, result interface{}) error {
 	return askError(survey.AskOne(prompt, result, nil))
 }
 
-func askInput(msg string, choice, result interface{}, validator survey.Validator) error {
+func askInput(msg string, value, result interface{}, validator survey.Validator) error {
 	if !isZero(result) {
 		if validator != nil {
 			return validator(toString(result))
 		}
 		return nil
 	}
-	prompt := &survey.Input{Message: msg}
-	switch v := choice.(type) {
+	var choice string
+	switch v := value.(type) {
 	case func() string:
-		prompt.Default = v()
+		choice = v()
 	case string:
-		prompt.Default = v
+		choice = v
 	case int:
-		prompt.Default = strconv.Itoa(v)
+		choice = strconv.Itoa(v)
 	}
-	return askError(survey.AskOne(prompt, result, validator))
+	prompt := &survey.Input{Message: msg, Default: choice}
+	return askError(survey.AskOne(prompt, result, survey.WithValidator(validator)))
 }
 
-func askSelect(msg string, choice interface{}, client *lade.Client, fn optionsFunc, result interface{}) error {
+func askSelect(msg string, value interface{}, client *lade.Client, fn optionsFunc, result interface{}) error {
 	if !isZero(result) {
 		return nil
+	}
+	var wg sync.WaitGroup
+	var choice string
+	switch v := value.(type) {
+	case func(client *lade.Client) string:
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			choice = v(client)
+		}()
+	case func() string:
+		choice = v()
+	case string:
+		choice = v
 	}
 	options, err := fn(client)
 	if err != nil {
 		return err
 	}
+	wg.Wait()
 	prompt := &survey.Select{Message: msg, Options: options.Keys(), PageSize: getPageSize()}
-	switch v := choice.(type) {
-	case func(client *lade.Client) string:
-		prompt.Default = v(client)
-	case string:
-		prompt.Default = v
+	if _, ok := options.Get(choice); ok {
+		prompt.Default = choice
 	}
 	var answer string
 	err = survey.AskOne(prompt, &answer, nil)
@@ -98,7 +113,7 @@ func askMultiSelect(msg string, client *lade.Client, fn optionsFunc, result inte
 	}
 	var answers []string
 	prompt := &survey.MultiSelect{Message: msg, Options: options.Keys(), PageSize: getPageSize()}
-	err = survey.AskOne(prompt, &answers, validator)
+	err = survey.AskOne(prompt, &answers, survey.WithValidator(validator))
 	if err != nil {
 		return askError(err)
 	}
@@ -125,6 +140,7 @@ func getAppOptions(client *lade.Client) (*orderedmap.OrderedMap, error) {
 	for _, app := range apps {
 		options.Set(app.Name, app.Name)
 	}
+	options.SortKeys(sort.Strings)
 	return options, nil
 }
 
@@ -140,6 +156,7 @@ func getAddonOptions(client *lade.Client) (*orderedmap.OrderedMap, error) {
 	for _, addon := range addons {
 		options.Set(addon.Name, addon.Name)
 	}
+	options.SortKeys(sort.Strings)
 	return options, nil
 }
 
@@ -259,7 +276,7 @@ func getServiceOptions(client *lade.Client) (*orderedmap.OrderedMap, error) {
 func getPageSize() int {
 	size, err := ts.GetSize()
 	if err != nil {
-		return survey.PageSize
+		return 20
 	}
 	return size.Row() * 4 / 5
 }

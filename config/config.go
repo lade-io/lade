@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/jinzhu/configor"
-	"github.com/mitchellh/go-homedir"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
 )
@@ -22,6 +21,14 @@ type Config struct {
 	TokenURL     string    `yaml:"token_url,omitempty" env:"LADE_TOKEN_URL"`
 }
 
+func (c *Config) GetToken() *oauth2.Token {
+	return &oauth2.Token{
+		AccessToken:  c.AccessToken,
+		RefreshToken: c.RefreshToken,
+		Expiry:       c.Expiry,
+	}
+}
+
 func (c *Config) StoreToken(token *oauth2.Token) error {
 	c.AccessToken = token.AccessToken
 	c.RefreshToken = token.RefreshToken
@@ -30,7 +37,7 @@ func (c *Config) StoreToken(token *oauth2.Token) error {
 }
 
 const (
-	configDirName  = ".lade"
+	configDirName  = "lade"
 	configFileName = "config.yaml"
 )
 
@@ -58,11 +65,11 @@ func configPaths() (string, string, error) {
 	if configFile, ok := os.LookupEnv("LADE_CONFIG"); ok {
 		return filepath.Dir(configFile), configFile, nil
 	}
-	home, err := homedir.Dir()
+	userDir, err := os.UserConfigDir()
 	if err != nil {
 		return "", "", err
 	}
-	configDir := filepath.Join(home, configDirName)
+	configDir := filepath.Join(userDir, configDirName)
 	configFile := filepath.Join(configDir, configFileName)
 	return configDir, configFile, nil
 }

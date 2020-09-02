@@ -4,11 +4,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/dustin/go-humanize"
 	"github.com/lade-io/go-lade"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
-	"gopkg.in/AlecAivazis/survey.v1"
 )
 
 var appsCmd = &cobra.Command{
@@ -167,10 +167,18 @@ func getAppName() string {
 	return filepath.Base(cwd)
 }
 
+func getPlan(client *lade.Client) string {
+	plan, err := client.Plan.Default()
+	if err != nil {
+		return ""
+	}
+	return plan.ID
+}
+
 func getRegion(client *lade.Client) string {
 	user, err := client.User.Me()
-	if err == nil {
-		return user.Region
+	if err != nil {
+		return ""
 	}
-	return ""
+	return user.Region
 }

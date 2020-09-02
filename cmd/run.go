@@ -1,17 +1,16 @@
 package cmd
 
 import (
-	"errors"
 	"io"
 	"net"
 	"os"
-	"os/signal"
-	"syscall"
+	gosignal "os/signal"
 
-	"github.com/docker/docker/pkg/term"
+	"github.com/AlecAivazis/survey/v2"
+	"github.com/docker/docker/pkg/signal"
 	"github.com/lade-io/go-lade"
+	"github.com/moby/term"
 	"github.com/spf13/cobra"
-	"gopkg.in/AlecAivazis/survey.v1"
 )
 
 var runCmd = func() *cobra.Command {
@@ -44,10 +43,18 @@ func runRun(client *lade.Client, opts *lade.ProcessCreateOpts, appName string) e
 	if err := askInput("Command:", "", &opts.Command, survey.Required); err != nil {
 		return err
 	}
+	if err := askSelect("Plan:", getPlan, client, getPlanOptions, &opts.PlanID); err != nil {
+		return err
+	}
 	process, err := client.Process.Create(appName, opts)
 	if err != nil {
 		return err
 	}
+	state, err := term.SetRawTerminal(os.Stdin.Fd())
+	if err != nil {
+		return err
+	}
+	defer term.RestoreTerminal(os.Stdin.Fd(), state)
 	resizeTTY := func() {
 		opts := &lade.ProcessResizeOpts{Height: 24, Width: 80}
 		size, err := term.GetWinsize(os.Stdin.Fd())
@@ -64,21 +71,15 @@ func attachStream(resizeTTY func()) lade.ConnHandler {
 	return func(conn net.Conn) error {
 		resizeTTY()
 		sigChan := make(chan os.Signal, 1)
-		signal.Notify(sigChan, syscall.SIGWINCH)
+		gosignal.Notify(sigChan, signal.SIGWINCH)
 		go func() {
 			for range sigChan {
 				resizeTTY()
 			}
 		}()
 
-		state, err := term.SetRawTerminal(os.Stdin.Fd())
-		if err != nil {
-			return err
-		}
-		defer term.RestoreTerminal(os.Stdin.Fd(), state)
-
-		errChan := make(chan error)
 		doneChan := make(chan struct{})
+		errChan := make(chan error)
 		go func() {
 			_, err := io.Copy(os.Stdout, conn)
 			if err != nil {
@@ -95,10 +96,8 @@ func attachStream(resizeTTY func()) lade.ConnHandler {
 		}()
 
 		select {
-		case err = <-errChan:
-			if !errors.Is(err, io.EOF) {
-				return err
-			}
+		case err := <-errChan:
+			return err
 		case <-doneChan:
 		}
 		return nil

@@ -8,11 +8,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/dustin/go-humanize"
 	"github.com/lade-io/go-lade"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
-	"gopkg.in/AlecAivazis/survey.v1"
 )
 
 var addonsCmd = &cobra.Command{
@@ -236,7 +236,7 @@ func addonsCreateRun(client *lade.Client, opts *lade.AddonCreateOpts) error {
 	if err := askInput("Addon Name:", opts.Service, &opts.Name, validateName); err != nil {
 		return err
 	}
-	if err := askSelect("Plan:", "", client, getPlanOptions, &opts.PlanID); err != nil {
+	if err := askSelect("Plan:", getPlan, client, getPlanOptions, &opts.PlanID); err != nil {
 		return err
 	}
 	if err := askSelect("Region:", getRegion, client, getRegionOptions, &opts.RegionID); err != nil {

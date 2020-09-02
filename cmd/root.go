@@ -6,7 +6,6 @@ import (
 	"github.com/lade-io/lade/config"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
-	"gopkg.in/AlecAivazis/survey.v1"
 )
 
 var (
@@ -60,7 +59,6 @@ func initLogger() {
 }
 
 func initPrompt() {
-	survey.PageSize = 20
 	table.DefaultPadding = 4
 }
 

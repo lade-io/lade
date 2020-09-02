@@ -1,0 +1,19 @@
+language: go
+go:
+  - 1.13.x
+os:
+  - linux
+script:
+  - go vet
+jobs:
+  include:
+    - stage: deploy
+      if: tag IS present
+      install:
+        - curl -fsSL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | BINDIR=$GOPATH/bin sh
+      script: skip
+      deploy:
+        - provider: script
+          script: goreleaser
+          on:
+            tags: true

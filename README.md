@@ -5,14 +5,14 @@
 [![Build Status](https://travis-ci.com/lade-io/lade.svg?branch=master)](https://travis-ci.com/lade-io/lade)
 [![Release](https://img.shields.io/github/v/release/lade-io/lade.svg)](https://github.com/lade-io/lade/releases/latest)
 
-Lade is a developer tool for running and managing your apps.
+Lade is a developer tool for deploying and managing your apps.
 
 You can learn more about Lade at https://lade.io.
 
 ## Installation
 
 Lade is supported on MacOS, Linux and Windows as a standalone binary.
-You can download the latest binary from the [releases page](https://github.com/lade-io/lade/releases) on Github.
+You can download the latest binary from the [releases page](https://github.com/lade-io/lade/releases) on GitHub.
 
 ### MacOS
 
@@ -47,13 +47,13 @@ Create an app:
 $ lade apps create myapp
 ```
 
-Create an addon:
+Create an add-on:
 
 ```sh
 $ lade addons create postgres -n mydb
 ```
 
-Attach addon to app:
+Attach add-on to app:
 
 ```sh
 $ lade addons attach mydb -a myapp

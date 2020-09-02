@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/lade-io/go-lade"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
-	"gopkg.in/AlecAivazis/survey.v1"
 )
 
 var loginCmd = &cobra.Command{

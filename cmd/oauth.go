@@ -2,9 +2,14 @@ package cmd
 
 import (
 	"errors"
+	"os"
+	"os/signal"
+	"strings"
+	"sync"
 	"syscall"
 
 	"github.com/lade-io/go-lade"
+	"github.com/lade-io/lade/config"
 	"golang.org/x/oauth2"
 )
 
@@ -23,30 +28,69 @@ func getOAuthConfig() *oauth2.Config {
 	return oauth
 }
 
-func getClient() (*lade.Client, error) {
-	token := &oauth2.Token{
-		AccessToken:  conf.AccessToken,
-		RefreshToken: conf.RefreshToken,
-		Expiry:       conf.Expiry,
+type tokenSource struct {
+	*sync.Mutex
+	oauthConf *oauth2.Config
+	token     *oauth2.Token
+}
+
+func newTokenSource(oauthConf *oauth2.Config) *tokenSource {
+	mutex := new(sync.Mutex)
+	stopChan := make(chan os.Signal, 1)
+	signal.Notify(stopChan, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-stopChan
+		mutex.Lock()
+		os.Exit(0)
+	}()
+	return &tokenSource{
+		Mutex:     mutex,
+		oauthConf: oauthConf,
+		token:     conf.GetToken(),
 	}
-	ctx := oauth2.NoContext
+}
+
+func (t *tokenSource) Token() (*oauth2.Token, error) {
+	t.Lock()
+	defer t.Unlock()
+	if t.token.Valid() {
+		return t.token, nil
+	}
+	if err := config.Load(conf); err != nil {
+		return nil, err
+	}
+	t.token = conf.GetToken()
+	if t.token.Valid() {
+		return t.token, nil
+	}
+	ts := t.oauthConf.TokenSource(oauth2.NoContext, t.token)
+	token, err := ts.Token()
+	if err != nil {
+		return nil, err
+	}
+	t.token = token
+	return token, conf.StoreToken(token)
+}
+
+func getClient() (*lade.Client, error) {
 	oauthConf := getOAuthConfig()
-	tokenSource := oauthConf.TokenSource(ctx, token)
-	if !token.Valid() {
-		token, err := tokenSource.Token()
-		if err == nil {
-			conf.StoreToken(token)
-		} else if !errors.Is(err, syscall.ECONNREFUSED) {
-			token, err = loginRun(oauthConf)
+	ts := newTokenSource(oauthConf)
+	if !ts.token.Valid() {
+		_, err := ts.Token()
+		var e *oauth2.RetrieveError
+		if errors.As(err, &e) && e.Response.StatusCode >= 500 {
+			lines := strings.SplitN(e.Error(), "\n", 2)
+			return nil, errors.New(lines[0])
+		} else if errors.Is(err, syscall.ECONNREFUSED) {
+			return nil, err
+		} else if err != nil {
+			ts.token, err = loginRun(oauthConf)
 			if err != nil {
 				return nil, err
 			}
-			tokenSource = oauthConf.TokenSource(ctx, token)
-		} else {
-			return nil, err
 		}
 	}
-	httpClient := oauth2.NewClient(ctx, tokenSource)
+	httpClient := oauth2.NewClient(oauth2.NoContext, ts)
 	client := lade.NewClient(httpClient)
 	if conf.APIURL != "" {
 		client.SetAPIURL(conf.APIURL)

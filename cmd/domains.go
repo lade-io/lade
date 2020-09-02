@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/lade-io/go-lade"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
-	"gopkg.in/AlecAivazis/survey.v1"
 )
 
 var domainsCmd = &cobra.Command{
