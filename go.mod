@@ -1,6 +1,6 @@
 module github.com/lade-io/lade
 
-go 1.13
+go 1.15
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.0.7
@@ -9,7 +9,7 @@ require (
 	github.com/iancoleman/orderedmap v0.0.0-20180606015914-fec04b9a4f6d
 	github.com/jinzhu/configor v1.1.1
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/lade-io/go-lade v0.1.2
+	github.com/lade-io/go-lade v0.1.3
 	github.com/mattn/go-colorable v0.1.4
 	github.com/mattn/go-isatty v0.0.12
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b

@@ -233,7 +233,7 @@ func addonsCreateRun(client *lade.Client, opts *lade.AddonCreateOpts) error {
 	if err := askSelect("Service:", "", client, getServiceOptions, &opts.Service); err != nil {
 		return err
 	}
-	if err := askInput("Addon Name:", opts.Service, &opts.Name, validateName); err != nil {
+	if err := askInput("Addon Name:", opts.Service, &opts.Name, validateAddonName(client)); err != nil {
 		return err
 	}
 	if err := askSelect("Plan:", getPlan, client, getPlanOptions, &opts.PlanID); err != nil {

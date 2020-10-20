@@ -92,7 +92,7 @@ func init() {
 }
 
 func appsCreateRun(client *lade.Client, opts *lade.AppCreateOpts) error {
-	if err := askInput("App Name:", getAppName, &opts.Name, validateName); err != nil {
+	if err := askInput("App Name:", getAppName, &opts.Name, validateAppName(client)); err != nil {
 		return err
 	}
 	if err := askSelect("Region:", getRegion, client, getRegionOptions, &opts.RegionID); err != nil {

@@ -84,7 +84,7 @@ func domainsAddRun(client *lade.Client, opts *lade.DomainCreateOpts, appName str
 	if err := askSelect("App Name:", getAppName, client, getAppOptions, &appName); err != nil {
 		return err
 	}
-	if err := askInput("Domain Name:", nil, &opts.Hostname, survey.Required); err != nil {
+	if err := askInput("Domain Name:", nil, &opts.Hostname, validateDomainName(client, appName)); err != nil {
 		return err
 	}
 	_, err := client.Domain.Create(appName, opts)

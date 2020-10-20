@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"reflect"
 	"regexp"
@@ -381,6 +382,24 @@ func splitProcessArg(arg string) (string, string, string, error) {
 	return args[0], spec[0], spec[1], nil
 }
 
+func validateAddonName(client *lade.Client) survey.Validator {
+	return survey.ComposeValidators(validateName, validateUniqueName(func(name string) error {
+		return client.Addon.Head(name)
+	}))
+}
+
+func validateAppName(client *lade.Client) survey.Validator {
+	return survey.ComposeValidators(validateName, validateUniqueName(func(name string) error {
+		return client.App.Head(name)
+	}))
+}
+
+func validateDomainName(client *lade.Client, appName string) survey.Validator {
+	return survey.ComposeValidators(survey.Required, validateUniqueName(func(name string) error {
+		return client.Domain.Head(appName, name)
+	}))
+}
+
 func validateCount(min, max int) func(interface{}) error {
 	return func(val interface{}) error {
 		num, err := strconv.Atoi(val.(string))
@@ -409,4 +428,18 @@ func validateName(val interface{}) error {
 		return errors.New("Name must start with a-z followed by a-z, 0-9, dash (-) or underscore (_)")
 	}
 	return nil
+}
+
+func validateUniqueName(fn func(string) error) survey.Validator {
+	return func(val interface{}) error {
+		err := fn(val.(string))
+		if err == nil {
+			return errors.New("Name is already taken")
+		}
+		var e *lade.APIError
+		if !errors.As(err, &e) || e.Status != http.StatusNotFound {
+			return err
+		}
+		return nil
+	}
 }
