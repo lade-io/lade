@@ -43,7 +43,7 @@ func runRun(client *lade.Client, opts *lade.ProcessCreateOpts, appName string) e
 	if err := askInput("Command:", "", &opts.Command, survey.Required); err != nil {
 		return err
 	}
-	if err := askSelect("Plan:", getPlan, client, getPlanOptions, &opts.PlanID); err != nil {
+	if err := askSelect("Plan:", getPlan, client, getPlanOptions(""), &opts.PlanID); err != nil {
 		return err
 	}
 	process, err := client.Process.Create(appName, opts)

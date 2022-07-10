@@ -1,8 +1,9 @@
 package cmd
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
-	"net/http"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/lade-io/go-lade"
@@ -26,7 +27,7 @@ type loginOpts struct {
 
 func loginRun(oauthConf *oauth2.Config) (*oauth2.Token, error) {
 	opts := &loginOpts{}
-	ctx := oauth2.NoContext
+	ctx := context.Background()
 	qs := []*survey.Question{
 		{
 			Name:     "username",
@@ -47,9 +48,16 @@ func loginRun(oauthConf *oauth2.Config) (*oauth2.Token, error) {
 		token, err := oauthConf.PasswordCredentialsToken(ctx, opts.Username, opts.Password)
 		if err != nil {
 			if oautherr, ok := err.(*oauth2.RetrieveError); ok {
-				if oautherr.Response.StatusCode == http.StatusUnauthorized {
-					fmt.Println("Invalid username or password! Please try again.")
-					continue
+				apierr := &lade.APIError{}
+				if err = json.Unmarshal(oautherr.Body, apierr); err == nil {
+					switch apierr.Type {
+					case "invalid_grant":
+						fmt.Println("Invalid username or password. Please try again.")
+						continue
+					case "email_not_verified":
+						fmt.Println("Your email is not verified. Please check your inbox.")
+						continue
+					}
 				}
 			}
 			return nil, lade.ErrServerError

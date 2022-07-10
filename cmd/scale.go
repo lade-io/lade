@@ -62,7 +62,7 @@ func scaleRun(client *lade.Client, appName string, maxQuota int, opts *lade.Proc
 		if err != nil {
 			return err
 		}
-		err = askSelect("Plan:", process.PlanID, client, getPlanOptions, &opt.PlanID)
+		err = askSelect("Plan:", process.PlanID, client, getPlanOptions(""), &opt.PlanID)
 		if err != nil {
 			return err
 		}

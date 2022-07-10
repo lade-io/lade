@@ -12,6 +12,7 @@ builds:
       - windows
     goarch:
       - amd64
+      - arm64
 archives:
   - name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
     format_overrides:
@@ -20,7 +21,7 @@ archives:
     files:
       - none*
 brews:
-  - github:
+  - tap:
       owner: lade-io
       name: homebrew-tap
     folder: Formula

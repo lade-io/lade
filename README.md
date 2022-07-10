@@ -1,8 +1,8 @@
 # Lade
 
-![Lade logo](https://static.lade.io/lade-logo-small.png)
+![Lade logo](lade-logo.png)
 
-[![Build Status](https://travis-ci.com/lade-io/lade.svg?branch=master)](https://travis-ci.com/lade-io/lade)
+[![Build Status](https://img.shields.io/github/workflow/status/lade-io/lade/Release.svg)](https://github.com/lade-io/lade/actions/workflows/release.yml)
 [![Release](https://img.shields.io/github/v/release/lade-io/lade.svg)](https://github.com/lade-io/lade/releases/latest)
 
 Lade is a developer tool for deploying and managing your apps.
@@ -47,22 +47,22 @@ Create an app:
 $ lade apps create myapp
 ```
 
-Create an add-on:
+Create an addon:
 
 ```sh
-$ lade addons create postgres -n mydb
+$ lade addons create postgres --name mydb
 ```
 
-Attach add-on to app:
+Attach addon to app:
 
 ```sh
-$ lade addons attach mydb -a myapp
+$ lade addons attach mydb --app myapp
 ```
 
 Deploy an app:
 
 ```sh
-$ lade deploy -a myapp
+$ lade deploy --app myapp
 ```
 
 ## Command Help
@@ -78,6 +78,7 @@ Commands:
   addons      Manage addons
   apps        Manage apps
   deploy      Deploy an app
+  disks       Manage disks
   domains     Manage domains
   env         Manage app environment
   help        Help about any command

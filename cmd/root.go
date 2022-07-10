@@ -13,6 +13,9 @@ var (
 	RootCmd = &cobra.Command{
 		Use:   "lade",
 		Short: "Manage your Lade resources",
+		CompletionOptions: cobra.CompletionOptions{
+			DisableDefaultCmd: true,
+		},
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			cmd.SilenceUsage = true
 		},
@@ -34,6 +37,7 @@ func init() {
 	RootCmd.AddCommand(addonsCmd)
 	RootCmd.AddCommand(appsCmd)
 	RootCmd.AddCommand(deployCmd)
+	RootCmd.AddCommand(disksCmd)
 	RootCmd.AddCommand(domainsCmd)
 	RootCmd.AddCommand(envCmd)
 	RootCmd.AddCommand(loginCmd)

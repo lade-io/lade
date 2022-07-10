@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"os"
 	"os/signal"
@@ -63,7 +64,7 @@ func (t *tokenSource) Token() (*oauth2.Token, error) {
 	if t.token.Valid() {
 		return t.token, nil
 	}
-	ts := t.oauthConf.TokenSource(oauth2.NoContext, t.token)
+	ts := t.oauthConf.TokenSource(context.Background(), t.token)
 	token, err := ts.Token()
 	if err != nil {
 		return nil, err
@@ -78,7 +79,7 @@ func getClient() (*lade.Client, error) {
 	if !ts.token.Valid() {
 		_, err := ts.Token()
 		var e *oauth2.RetrieveError
-		if errors.As(err, &e) && e.Response.StatusCode >= 500 {
+		if errors.As(err, &e) && e.Response.StatusCode >= 404 {
 			lines := strings.SplitN(e.Error(), "\n", 2)
 			return nil, errors.New(lines[0])
 		} else if errors.Is(err, syscall.ECONNREFUSED) {
@@ -90,7 +91,7 @@ func getClient() (*lade.Client, error) {
 			}
 		}
 	}
-	httpClient := oauth2.NewClient(oauth2.NoContext, ts)
+	httpClient := oauth2.NewClient(context.Background(), ts)
 	client := lade.NewClient(httpClient)
 	if conf.APIURL != "" {
 		client.SetAPIURL(conf.APIURL)

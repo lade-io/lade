@@ -127,9 +127,9 @@ func appsRemoveRun(client *lade.Client, name string) error {
 	prompt := &survey.Confirm{
 		Message: "Do you really want to remove " + app.Name + "?",
 	}
-	delete := false
-	survey.AskOne(prompt, &delete, nil)
-	if delete {
+	confirm := false
+	survey.AskOne(prompt, &confirm, nil)
+	if confirm {
 		err = client.App.Delete(app)
 	}
 	return err
@@ -167,8 +167,16 @@ func getAppName() string {
 	return filepath.Base(cwd)
 }
 
+func getDiskPlan(client *lade.Client) string {
+	plan, err := client.Plan.Default("disk")
+	if err != nil {
+		return ""
+	}
+	return plan.ID
+}
+
 func getPlan(client *lade.Client) string {
-	plan, err := client.Plan.Default()
+	plan, err := client.Plan.Default("")
 	if err != nil {
 		return ""
 	}
@@ -180,5 +188,5 @@ func getRegion(client *lade.Client) string {
 	if err != nil {
 		return ""
 	}
-	return user.Region
+	return user.RegionID
 }

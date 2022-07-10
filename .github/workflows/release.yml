@@ -1,0 +1,43 @@
+name: Release
+on: push
+env:
+  GOPRIVATE: github.com/lade-io/*
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
+        with:
+          fetch-depth: 0
+      - name: Install Go
+        uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923 # pin@v3
+        with:
+          go-version: 1.18
+      - name: Vet
+        run: go vet ./...
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
+        with:
+          fetch-depth: 0
+      - name: Install Go
+        uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923 # pin@v3
+        with:
+          go-version: 1.18
+      - name: Generate Token
+        id: generate-token
+        uses: tibdex/github-app-token@586e1a624db6a5a4ac2c53daeeded60c5e3d50fe # pin@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@68acf3b1adf004ac9c2f0a4259e85c5f66e99bef # pin@v3
+        with:
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}

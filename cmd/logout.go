@@ -39,6 +39,7 @@ func logoutRun(oauthConf *oauth2.Config) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		return lade.ErrServerError
 	}

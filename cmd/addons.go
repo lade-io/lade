@@ -236,13 +236,13 @@ func addonsCreateRun(client *lade.Client, opts *lade.AddonCreateOpts) error {
 	if err := askInput("Addon Name:", opts.Service, &opts.Name, validateAddonName(client)); err != nil {
 		return err
 	}
-	if err := askSelect("Plan:", getPlan, client, getPlanOptions, &opts.PlanID); err != nil {
+	if err := askSelect("Plan:", getPlan, client, getPlanOptions(""), &opts.PlanID); err != nil {
 		return err
 	}
 	if err := askSelect("Region:", getRegion, client, getRegionOptions, &opts.RegionID); err != nil {
 		return err
 	}
-	if err := askSelect("Release:", "", client, getReleaseOptions(opts.Service), &opts.Release); err != nil {
+	if err := askSelect("Version:", "", client, getVersionOptions(opts.Service), &opts.Release); err != nil {
 		return err
 	}
 	if err := askConfirm("Public:", true, &opts.Public); err != nil {
@@ -271,9 +271,9 @@ func addonsDetachRun(client *lade.Client, appName, addonName string) error {
 	prompt := &survey.Confirm{
 		Message: "Do you really want to detach " + strings.Join(names, ", ") + "?",
 	}
-	delete := false
-	survey.AskOne(prompt, &delete, nil)
-	if delete {
+	confirm := false
+	survey.AskOne(prompt, &confirm, nil)
+	if confirm {
 		err = client.Attachment.Delete(appName, addonName)
 	}
 	return err
@@ -316,9 +316,9 @@ func addonsRemoveRun(client *lade.Client, name string) error {
 	prompt := &survey.Confirm{
 		Message: "Do you really want to remove " + addon.Name + "?",
 	}
-	delete := false
-	survey.AskOne(prompt, &delete, nil)
-	if delete {
+	confirm := false
+	survey.AskOne(prompt, &confirm, nil)
+	if confirm {
 		err = client.Addon.Delete(addon)
 	}
 	return err
@@ -329,7 +329,7 @@ func addonsServicesRun(client *lade.Client) error {
 	if err != nil {
 		return err
 	}
-	t := table.New("NAME", "TITLE", "RELEASES")
+	t := table.New("NAME", "TITLE", "VERSIONS")
 	for _, service := range services {
 		serviceTags := strings.Join(service.Repo.Tags, ", ")
 		t.AddRow(service.Name, service.Title, serviceTags)
@@ -351,7 +351,7 @@ func addonsShowRun(client *lade.Client, name string) error {
 	t.AddRow("Service:", addon.Service.Title)
 	t.AddRow("Plan:", addon.PlanID)
 	t.AddRow("Region:", addon.Region.Name)
-	t.AddRow("Release:", addon.Release)
+	t.AddRow("Version:", addon.Release)
 	t.AddRow("Public:", printBool(addon.Public))
 	t.AddRow("Status:", addon.Status)
 	t.AddRow("Addon URI:", getAddonURI(addon))
@@ -367,10 +367,10 @@ func addonsUpdateRun(client *lade.Client, opts *lade.AddonUpdateOpts, name strin
 	if err != nil {
 		return err
 	}
-	if err = askSelect("Plan:", addon.PlanID, client, getPlanOptions, &opts.PlanID); err != nil {
+	if err = askSelect("Plan:", addon.PlanID, client, getPlanOptions(addon.PlanID), &opts.PlanID); err != nil {
 		return err
 	}
-	if err = askSelect("Release:", addon.Release, client, getReleaseOptions(addon.Service.Name), &opts.Release); err != nil {
+	if err = askSelect("Version:", addon.Release, client, getVersionOptions(addon.Service.Name), &opts.Release); err != nil {
 		return err
 	}
 	if err = askConfirm("Public:", addon.Public, &opts.Public); err != nil {

@@ -129,9 +129,9 @@ func envEditRun(client *lade.Client, appName string) error {
 	prompt := &survey.Confirm{
 		Message: "Do you really want to edit " + strings.Join(names, ", ") + "?",
 	}
-	set := false
-	survey.AskOne(prompt, &set, nil)
-	if set {
+	confirm := false
+	survey.AskOne(prompt, &confirm, nil)
+	if confirm {
 		_, err = client.Env.Set(appName, opts)
 	}
 	return err
@@ -185,9 +185,9 @@ func envUnsetRun(client *lade.Client, appName string, opts *lade.EnvUnsetOpts) e
 	prompt := &survey.Confirm{
 		Message: "Do you really want to unset " + strings.Join(opts.Names, ", ") + "?",
 	}
-	unset := false
-	survey.AskOne(prompt, &unset, nil)
-	if unset {
+	confirm := false
+	survey.AskOne(prompt, &confirm, nil)
+	if confirm {
 		err = client.Env.Unset(appName, opts)
 	}
 	return err
@@ -203,7 +203,7 @@ func mergeEnvMaps(envMap, answerMap map[string]string) (*lade.EnvSetOpts, []stri
 		opts.AddEnv(name, value)
 		names = append(names, name)
 	}
-	for name, _ := range envMap {
+	for name := range envMap {
 		if _, ok := answerMap[name]; ok {
 			continue
 		}

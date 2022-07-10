@@ -67,7 +67,7 @@ var domainsRemoveCmd = func() *cobra.Command {
 			if len(args) > 0 {
 				hostname = args[0]
 			}
-			return domainsRemoveRun(client, hostname, appName)
+			return domainsRemoveRun(client, appName, hostname)
 		},
 	}
 	cmd.Flags().StringVarP(&appName, "app", "a", "", "App Name")
@@ -84,7 +84,7 @@ func domainsAddRun(client *lade.Client, opts *lade.DomainCreateOpts, appName str
 	if err := askSelect("App Name:", getAppName, client, getAppOptions, &appName); err != nil {
 		return err
 	}
-	if err := askInput("Domain Name:", nil, &opts.Hostname, validateDomainName(client, appName)); err != nil {
+	if err := askInput("Domain Name:", "", &opts.Hostname, validateDomainName(client, appName)); err != nil {
 		return err
 	}
 	_, err := client.Domain.Create(appName, opts)
@@ -111,7 +111,7 @@ func domainsListRun(client *lade.Client, appName string) error {
 	return nil
 }
 
-func domainsRemoveRun(client *lade.Client, hostname, appName string) error {
+func domainsRemoveRun(client *lade.Client, appName, hostname string) error {
 	if err := askSelect("App Name:", getAppName, client, getAppOptions, &appName); err != nil {
 		return err
 	}
@@ -125,9 +125,9 @@ func domainsRemoveRun(client *lade.Client, hostname, appName string) error {
 	prompt := &survey.Confirm{
 		Message: "Do you really want to delete " + domain.Hostname + "?",
 	}
-	delete := false
-	survey.AskOne(prompt, &delete, nil)
-	if delete {
+	confirm := false
+	survey.AskOne(prompt, &confirm, nil)
+	if confirm {
 		err = client.Domain.Delete(domain)
 	}
 	return err

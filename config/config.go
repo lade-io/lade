@@ -9,7 +9,7 @@ import (
 
 	"github.com/jinzhu/configor"
 	"golang.org/x/oauth2"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
