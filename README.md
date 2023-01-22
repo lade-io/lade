@@ -2,12 +2,12 @@
 
 ![Lade logo](lade-logo.png)
 
-[![Build Status](https://img.shields.io/github/workflow/status/lade-io/lade/Release.svg)](https://github.com/lade-io/lade/actions/workflows/release.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/lade-io/lade/release.yml)](https://github.com/lade-io/lade/actions/workflows/release.yml)
 [![Release](https://img.shields.io/github/v/release/lade-io/lade.svg)](https://github.com/lade-io/lade/releases/latest)
 
 Lade is a developer tool for deploying and managing your apps.
 
-You can learn more about Lade at https://lade.io.
+You can learn more about Lade at https://www.lade.io.
 
 ## Installation
 

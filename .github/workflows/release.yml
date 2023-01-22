@@ -7,11 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # pin@v3
         with:
           fetch-depth: 0
       - name: Install Go
-        uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923 # pin@v3
+        uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # pin@v3
         with:
           go-version: 1.18
       - name: Vet
@@ -22,21 +22,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # pin@v3
         with:
           fetch-depth: 0
       - name: Install Go
-        uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923 # pin@v3
+        uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # pin@v3
         with:
           go-version: 1.18
       - name: Generate Token
         id: generate-token
-        uses: tibdex/github-app-token@586e1a624db6a5a4ac2c53daeeded60c5e3d50fe # pin@v1
+        uses: tibdex/github-app-token@021a2405c7f990db57f5eae5397423dcc554159c # pin@v1
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@68acf3b1adf004ac9c2f0a4259e85c5f66e99bef # pin@v3
+        uses: goreleaser/goreleaser-action@b508e2e3ef3b19d4e4146d4f8fb3ba9db644a757 # pin@v3
         with:
           args: release --rm-dist
         env:
