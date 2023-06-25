@@ -26,7 +26,7 @@ var addonsAttachCmd = func() *cobra.Command {
 	opts := &lade.AttachmentCreateOpts{}
 	cmd := &cobra.Command{
 		Use:   "attach <addon-name>",
-		Short: "Attach addon to an app",
+		Short: "Attach an addon to an app",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := getClient()
@@ -72,7 +72,7 @@ var addonsDetachCmd = func() *cobra.Command {
 	var addonName string
 	cmd := &cobra.Command{
 		Use:   "detach <addon-name>",
-		Short: "Detach addon from an app",
+		Short: "Detach an addon from an app",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := getClient()
@@ -108,7 +108,7 @@ var addonsLogsCmd = func() *cobra.Command {
 	opts := &lade.LogStreamOpts{}
 	cmd := &cobra.Command{
 		Use:   "logs <addon-name>",
-		Short: "Show logs from addon",
+		Short: "Show logs from an addon",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := getClient()

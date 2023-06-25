@@ -11,7 +11,7 @@ You can learn more about Lade at https://www.lade.io.
 
 ## Installation
 
-Lade is supported on MacOS, Linux and Windows as a standalone binary.
+Lade is supported on MacOS, Linux, and Windows as a standalone binary.
 You can download the latest binary from the [releases page](https://github.com/lade-io/lade/releases) on GitHub.
 
 ### MacOS
@@ -24,7 +24,7 @@ brew install lade-io/tap/lade
 
 ### Linux
 
-You can download the latest tarball, extract and move to your `$PATH`:
+You can download the latest tarball, extract it, and move it to your `$PATH`:
 
 ```sh
 curl -L https://github.com/lade-io/lade/releases/latest/download/lade-linux-amd64.tar.gz | tar xz
@@ -53,7 +53,7 @@ Create an addon:
 $ lade addons create postgres --name mydb
 ```
 
-Attach addon to app:
+Attach an addon to an app:
 
 ```sh
 $ lade addons attach mydb --app myapp
@@ -84,11 +84,11 @@ Commands:
   help        Help about any command
   login       Login to your Lade account
   logout      Logout of your Lade account
-  logs        Show logs from app
+  logs        Show logs from an app
   plans       List available plans
   ps          Display running tasks
   regions     List available regions
-  run         Run command on app
+  run         Run a command on an app
   scale       Scale an app
 
 Options:

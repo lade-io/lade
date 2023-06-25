@@ -20,7 +20,7 @@ var disksAddCmd = func() *cobra.Command {
 	opts := &lade.DiskCreateOpts{}
 	cmd := &cobra.Command{
 		Use:   "add <disk-name>",
-		Short: "Add disk to an app",
+		Short: "Add a disk to an app",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := getClient()
@@ -74,7 +74,7 @@ var disksRemoveCmd = func() *cobra.Command {
 	var appName string
 	cmd := &cobra.Command{
 		Use:   "remove <disk-name>",
-		Short: "Remove disk from an app",
+		Short: "Remove a disk from an app",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := getClient()
@@ -97,7 +97,7 @@ var disksUpdateCmd = func() *cobra.Command {
 	opts := &lade.DiskUpdateOpts{}
 	cmd := &cobra.Command{
 		Use:   "update <disk-name>",
-		Short: "Update disk of an app",
+		Short: "Update a disk of an app",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := getClient()
 			if err != nil {

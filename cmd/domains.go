@@ -17,7 +17,7 @@ var domainsAddCmd = func() *cobra.Command {
 	opts := &lade.DomainCreateOpts{}
 	cmd := &cobra.Command{
 		Use:   "add <domain-name>",
-		Short: "Add domain to an app",
+		Short: "Add a domain to an app",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := getClient()
@@ -56,7 +56,7 @@ var domainsRemoveCmd = func() *cobra.Command {
 	var appName string
 	cmd := &cobra.Command{
 		Use:   "remove <domain-name>",
-		Short: "Remove domain from an app",
+		Short: "Remove a domain from an app",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := getClient()

@@ -13,7 +13,7 @@ var logsCmd = func() *cobra.Command {
 	opts := &lade.LogStreamOpts{}
 	cmd := &cobra.Command{
 		Use:   "logs",
-		Short: "Show logs from app",
+		Short: "Show logs from an app",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := getClient()

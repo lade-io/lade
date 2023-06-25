@@ -18,7 +18,7 @@ var runCmd = func() *cobra.Command {
 	opts := &lade.ProcessCreateOpts{}
 	cmd := &cobra.Command{
 		Use:   "run <command>",
-		Short: "Run command on app",
+		Short: "Run a command on an app",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := getClient()
