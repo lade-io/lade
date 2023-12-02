@@ -78,7 +78,6 @@ Commands:
   addons      Manage addons
   apps        Manage apps
   deploy      Deploy an app
-  disks       Manage disks
   domains     Manage domains
   env         Manage app environment
   help        Help about any command

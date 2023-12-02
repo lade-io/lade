@@ -167,16 +167,8 @@ func getAppName() string {
 	return filepath.Base(cwd)
 }
 
-func getDiskPlan(client *lade.Client) string {
-	plan, err := client.Plan.Default("disk")
-	if err != nil {
-		return ""
-	}
-	return plan.ID
-}
-
 func getPlan(client *lade.Client) string {
-	plan, err := client.Plan.Default("")
+	plan, err := client.Plan.Default()
 	if err != nil {
 		return ""
 	}

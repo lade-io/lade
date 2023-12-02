@@ -8,7 +8,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/iancoleman/orderedmap v0.0.0-20180606015914-fec04b9a4f6d
 	github.com/jinzhu/configor v1.1.1
-	github.com/lade-io/go-lade v0.1.6
+	github.com/lade-io/go-lade v0.1.7
 	github.com/mattn/go-colorable v0.1.12
 	github.com/mattn/go-isatty v0.0.14
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d

@@ -20,7 +20,7 @@ var plansCmd = &cobra.Command{
 }
 
 func plansRun(client *lade.Client) error {
-	plans, err := client.Plan.List("")
+	plans, err := client.Plan.List()
 	if err != nil {
 		return err
 	}
