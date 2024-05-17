@@ -452,6 +452,8 @@ github.com/lade-io/go-lade v0.1.6 h1:WA+4Br3H5W6g0yRe2ep0O0QDSTSVQ9qPm01JE9ZO5BY
 github.com/lade-io/go-lade v0.1.6/go.mod h1:kQDkodhmNS1E7FMCVSGmSqvQPgwyNk47tS42JwfrszA=
 github.com/lade-io/go-lade v0.1.7 h1:SobPauUkN+n9SZ6RRGS8uNFt6PaviFxzeT1IN65Eui4=
 github.com/lade-io/go-lade v0.1.7/go.mod h1:kQDkodhmNS1E7FMCVSGmSqvQPgwyNk47tS42JwfrszA=
+github.com/lade-io/go-lade v0.1.8 h1:AaYZXy5epefN3daQogyDJoy1CiIULtYF31xBFb3Lexg=
+github.com/lade-io/go-lade v0.1.8/go.mod h1:kQDkodhmNS1E7FMCVSGmSqvQPgwyNk47tS42JwfrszA=
 github.com/leodido/go-urn v1.2.0 h1:hpXL4XnriNwQ/ABnpepYM/1vCLWNDfUNts8dX3xTG6Y=
 github.com/leodido/go-urn v1.2.0/go.mod h1:+8+nEpDfqqsY+g338gtMEUOtuK+4dEMhiQEgxpxOKII=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
