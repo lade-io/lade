@@ -8,14 +8,14 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/iancoleman/orderedmap v0.0.0-20180606015914-fec04b9a4f6d
 	github.com/jinzhu/configor v1.1.1
-	github.com/lade-io/go-lade v0.1.8
+	github.com/lade-io/go-lade v0.1.9
 	github.com/mattn/go-colorable v0.1.12
 	github.com/mattn/go-isatty v0.0.14
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
 	github.com/rodaine/table v1.0.1
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.7.0
 	golang.org/x/oauth2 v0.0.0-20220630143837-2104d58473e0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -29,7 +29,7 @@ require (
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/klauspost/compress v1.13.1 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect

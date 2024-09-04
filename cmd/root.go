@@ -37,6 +37,7 @@ func init() {
 	RootCmd.AddCommand(addonsCmd)
 	RootCmd.AddCommand(appsCmd)
 	RootCmd.AddCommand(deployCmd)
+	RootCmd.AddCommand(disksCmd)
 	RootCmd.AddCommand(domainsCmd)
 	RootCmd.AddCommand(envCmd)
 	RootCmd.AddCommand(loginCmd)

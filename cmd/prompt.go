@@ -29,6 +29,7 @@ import (
 var (
 	validEnvName = regexp.MustCompile(`^[A-Z0-9-_]+$`)
 	validName    = regexp.MustCompile(`^[a-z][a-z0-9-_]*$`)
+	validPath    = regexp.MustCompile(`^(/[a-zA-Z0-9-_]+)+$`)
 )
 
 type optionsFunc func(*lade.Client) (*orderedmap.OrderedMap, error)
@@ -164,6 +165,41 @@ func getAddonOptions(client *lade.Client) (*orderedmap.OrderedMap, error) {
 	return options, nil
 }
 
+func getDiskOptions(appName string) optionsFunc {
+	return func(client *lade.Client) (*orderedmap.OrderedMap, error) {
+		disks, err := client.Disk.List(appName)
+		if err != nil {
+			return nil, err
+		}
+		if len(disks) == 0 {
+			return nil, errors.New("There are no disks available")
+		}
+		options := orderedmap.New()
+		for _, disk := range disks {
+			options.Set(disk.Name, disk.Name)
+		}
+		options.SortKeys(sort.Strings)
+		return options, nil
+	}
+}
+
+func getDiskPlanOptions(id string) optionsFunc {
+	return func(client *lade.Client) (*orderedmap.OrderedMap, error) {
+		plans, err := client.Plan.User(id, "disk")
+		if err != nil {
+			return nil, err
+		}
+		if len(plans) == 0 {
+			return nil, errors.New("There are no plans available")
+		}
+		options := orderedmap.New()
+		for _, plan := range plans {
+			options.Set(plan.ID, plan.ID)
+		}
+		return options, nil
+	}
+}
+
 func getDomainOptions(appName string) optionsFunc {
 	return func(client *lade.Client) (*orderedmap.OrderedMap, error) {
 		domains, err := client.Domain.List(appName)
@@ -200,7 +236,7 @@ func getKeyOptions(appName string) optionsFunc {
 
 func getPlanOptions(id string) optionsFunc {
 	return func(client *lade.Client) (*orderedmap.OrderedMap, error) {
-		plans, err := client.Plan.User(id)
+		plans, err := client.Plan.User(id, "")
 		if err != nil {
 			return nil, err
 		}
@@ -399,6 +435,12 @@ func validateAppName(client *lade.Client) survey.Validator {
 	}))
 }
 
+func validateDiskName(client *lade.Client, appName string) survey.Validator {
+	return survey.ComposeValidators(survey.Required, validateUniqueName(func(name string) error {
+		return client.Disk.Head(appName, name)
+	}))
+}
+
 func validateDomainName(client *lade.Client, appName string) survey.Validator {
 	return survey.ComposeValidators(survey.Required, validateUniqueName(func(name string) error {
 		return client.Domain.Head(appName, name)
@@ -431,6 +473,13 @@ func validateEnvName(val interface{}) error {
 func validateName(val interface{}) error {
 	if !validName.MatchString(val.(string)) {
 		return errors.New("Name must start with a-z followed by a-z, 0-9, dash (-) or underscore (_)")
+	}
+	return nil
+}
+
+func validatePath(val interface{}) error {
+	if !validPath.MatchString(val.(string)) {
+		return errors.New("Path must be valid absolute directory")
 	}
 	return nil
 }
