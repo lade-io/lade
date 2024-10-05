@@ -28,7 +28,7 @@ import (
 
 var (
 	validEnvName = regexp.MustCompile(`^[A-Z0-9-_]+$`)
-	validName    = regexp.MustCompile(`^[a-z][a-z0-9-_]*$`)
+	validName    = regexp.MustCompile(`^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`)
 	validPath    = regexp.MustCompile(`^(/[a-zA-Z0-9-_]+)+$`)
 )
 
@@ -472,7 +472,7 @@ func validateEnvName(val interface{}) error {
 
 func validateName(val interface{}) error {
 	if !validName.MatchString(val.(string)) {
-		return errors.New("Name must start with a-z followed by a-z, 0-9, dash (-) or underscore (_)")
+		return errors.New("Name must only contain a-z, 0-9 or dash (-), and must start and end with a-z or 0-9")
 	}
 	return nil
 }
