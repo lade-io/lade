@@ -8,7 +8,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/iancoleman/orderedmap v0.0.0-20180606015914-fec04b9a4f6d
 	github.com/jinzhu/configor v1.1.1
-	github.com/lade-io/go-lade v0.1.9
+	github.com/lade-io/go-lade v0.1.10
 	github.com/mattn/go-colorable v0.1.12
 	github.com/mattn/go-isatty v0.0.14
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
@@ -37,7 +37,7 @@ require (
 	github.com/opencontainers/runc v1.0.0-rc95 // indirect
 	github.com/opencontainers/runtime-spec v1.0.3-0.20210326190908-1c3f411f0417 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/r3labs/sse v0.0.0-20210224172625-26fe804710bc // indirect
+	github.com/r3labs/sse/v2 v2.10.0 // indirect
 	github.com/saulortega/pgeo.latlng v0.0.0-20180629162213-95aebe6d6520 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/afero v1.2.2 // indirect
@@ -56,4 +56,7 @@ require (
 	nhooyr.io/websocket v1.8.7 // indirect
 )
 
-replace github.com/iancoleman/orderedmap => github.com/beornf/orderedmap v0.0.0-20211007135025-664542c32438
+replace (
+	github.com/iancoleman/orderedmap => github.com/beornf/orderedmap v0.0.0-20211007135025-664542c32438
+	github.com/r3labs/sse/v2 => github.com/wwade/sse/v2 v2.10.1
+)

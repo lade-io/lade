@@ -27,8 +27,9 @@ import (
 )
 
 var (
-	validEnvName = regexp.MustCompile(`^[A-Z0-9-_]+$`)
-	validName    = regexp.MustCompile(`^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`)
+	validDomain  = regexp.MustCompile(`^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$`)
+	validEnvName = regexp.MustCompile(`^[A-Z_][A-Z0-9_]*$`)
+	validName    = regexp.MustCompile(`^[a-z]([a-z0-9-]*[a-z0-9])?$`)
 	validPath    = regexp.MustCompile(`^(/[a-zA-Z0-9-_]+)+$`)
 )
 
@@ -436,13 +437,13 @@ func validateAppName(client *lade.Client) survey.Validator {
 }
 
 func validateDiskName(client *lade.Client, appName string) survey.Validator {
-	return survey.ComposeValidators(survey.Required, validateUniqueName(func(name string) error {
+	return survey.ComposeValidators(validateName, validateUniqueName(func(name string) error {
 		return client.Disk.Head(appName, name)
 	}))
 }
 
 func validateDomainName(client *lade.Client, appName string) survey.Validator {
-	return survey.ComposeValidators(survey.Required, validateUniqueName(func(name string) error {
+	return survey.ComposeValidators(validateDomain, validateUniqueName(func(name string) error {
 		return client.Domain.Head(appName, name)
 	}))
 }
@@ -463,23 +464,30 @@ func validateCount(min, max int) func(interface{}) error {
 	}
 }
 
+func validateDomain(val interface{}) error {
+	if !validDomain.MatchString(val.(string)) {
+		return errors.New("Name must be a valid domain name")
+	}
+	return nil
+}
+
 func validateEnvName(val interface{}) error {
 	if !validEnvName.MatchString(val.(string)) {
-		return errors.New("Name must only contain A-Z, 0-9, dash (-) or underscore (_)")
+		return errors.New("Name must only contain A-Z, 0-9 or underscore (_), and start with A-Z or underscore (_)")
 	}
 	return nil
 }
 
 func validateName(val interface{}) error {
 	if !validName.MatchString(val.(string)) {
-		return errors.New("Name must only contain a-z, 0-9 or dash (-), and must start and end with a-z or 0-9")
+		return errors.New("Name must only contain a-z, 0-9 or dash (-), start with a-z, and end with a-z or 0-9")
 	}
 	return nil
 }
 
 func validatePath(val interface{}) error {
 	if !validPath.MatchString(val.(string)) {
-		return errors.New("Path must be valid absolute directory")
+		return errors.New("Path must be a valid absolute directory")
 	}
 	return nil
 }

@@ -33,6 +33,7 @@ var appsCreateCmd = func() *cobra.Command {
 			return appsCreateRun(client, opts)
 		},
 	}
+	cmd.Flags().StringVarP(&opts.PlanID, "plan", "p", "", "Plan")
 	cmd.Flags().StringVarP(&opts.RegionID, "region", "r", "", "Region")
 	return cmd
 }()
@@ -95,6 +96,9 @@ func appsCreateRun(client *lade.Client, opts *lade.AppCreateOpts) error {
 	if err := askInput("App Name:", getAppName, &opts.Name, validateAppName(client)); err != nil {
 		return err
 	}
+	if err := askSelect("Plan:", getPlan, client, getPlanOptions(""), &opts.PlanID); err != nil {
+		return err
+	}
 	if err := askSelect("Region:", getRegion, client, getRegionOptions, &opts.RegionID); err != nil {
 		return err
 	}
@@ -107,9 +111,9 @@ func appsListRun(client *lade.Client) error {
 	if err != nil {
 		return err
 	}
-	t := table.New("NAME", "OWNER", "CREATED", "STATUS")
+	t := table.New("NAME", "PLAN", "CREATED", "STATUS")
 	for _, app := range apps {
-		t.AddRow(app.Name, app.Owner.Username, humanize.Time(app.CreatedAt), app.Status)
+		t.AddRow(app.Name, app.PlanID, humanize.Time(app.CreatedAt), app.Status)
 	}
 	t.Print()
 	return nil
@@ -152,6 +156,7 @@ func appsShowRun(client *lade.Client, name string) error {
 	if len(processes) > 0 {
 		t.AddRow("Processes:", processInfo(processes))
 	}
+	t.AddRow("Plan:", app.PlanID)
 	t.AddRow("Region:", app.Region.Name)
 	t.AddRow("Status:", app.Status)
 	t.AddRow("Web URL:", app.Hostname)

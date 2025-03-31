@@ -44,6 +44,6 @@ func deployRun(client *lade.Client, opts *lade.ReleaseCreateOpts, appName string
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Build finished use \"%s logs -a %s\" to view app logs\n", RootCmd.Use, appName)
+	fmt.Printf("Build finished use \"%s logs -a %s -f\" to view app logs\n", RootCmd.Use, appName)
 	return nil
 }
